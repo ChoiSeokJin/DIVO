@@ -1,7 +1,5 @@
 # DIVO: Diverse Policy Learning via Random Obstacle Deployment
 
-This repository contains the official implementation of the paper:
-
 **"Diverse Policy Learning via Random Obstacle Deployment for Zero-Shot Adaptation"**  
 Seokjin Choi, Yonghyeon Lee, Seungyeon Kim, Che-Sang Park, Himchan Hwang, and Frank C. Park  
 *IEEE Robotics and Automation Letters (RA-L), 2025*
