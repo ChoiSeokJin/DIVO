@@ -100,6 +100,7 @@ class Evaluator:
         num_success = 0
         num_episode_fail = 0
         num_initialize_fail = 0
+        obstacle_pose_ = None
         with torch.no_grad():
             for episode in range(self.cfg.num_episodes):
                 self.env._record_frame = True
@@ -115,7 +116,10 @@ class Evaluator:
 
                 while not done:
                     obs_th = torch.from_numpy(obs).to(self.device,torch.float32)
-                    obstacle_pose = obs[0, 4:]*self.env.task._desk_size
+                    if obstacle_pose_ is not None:
+                        obstacle_pose = copy.deepcopy(obstacle_pose_)
+                    else:
+                        obstacle_pose = obs[0, 4:]*self.env.task._desk_size
                     if self.cfg.env.obstacle:
                         num_obstacle =  len(obstacle_pose)//2
                         obstacle_size = self.env._task._obstacle_size
@@ -215,10 +219,7 @@ class Evaluator:
                     motion_pred = self.predict_motion(obs, state, z, action, None)
                     action = action.cpu().detach().numpy()
 
-                    if self.motion_decoder is not None:
-                        next_obs, reward, done, info = self.env.step(action,motion_pred)
-                    else:
-                        next_obs, reward, done, info = self.env.step(action)
+                    next_obs, reward, done, info = self.env.step(action,motion_pred)
 
                     if self.env.obstacle_dist == 'random_step':
                         obstacle_pose_ = self.env._task.set_random_obs_pose(self.env.physics, next_obs)
